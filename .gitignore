@@ -1,3 +1,15 @@
+# Remove directories
+/yolo_env
+/runs/detect/*
+!/runs/detect/train35
+!/runs/detect/train35/*
+
+
+CHV_dataset.zip
+
+/hardhat_videos
+/hardhat_images
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
