@@ -16,7 +16,17 @@ def get_class_color(class_id):
     return colors[class_id % len(colors)]  # Assign color based on class_id, cycle if more than 6 classes
 
 def annotate_video_with_model(input_video_path, model):
+    
+    # Open the video file
     cap = cv2.VideoCapture(input_video_path)
+
+    frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    fps = int(cap.get(cv2.CAP_PROP_FPS))
+    if fps <= 0:
+        fps = 30
+    
+    out = cv2.VideoWriter(f'F:/coding_projects/hardhat_detection_on_construction_site/annotated_videos_results/annotated_{input_video_path.split("/")[-1].replace('mp4', 'avi')}', cv2.VideoWriter_fourcc(*'XVID'), fps, (frame_width, frame_height))
 
     while cap.isOpened():
         ret, frame = cap.read()
@@ -42,7 +52,7 @@ def annotate_video_with_model(input_video_path, model):
                 class_id = int(class_ids[i])  # Class ID for this detection (convert to int)
 
                 # Apply confidence threshold
-                if confidence > 0.5:  # Adjust this threshold if necessary
+                if confidence > 0.5:  # Only annotate detections with confidence > 0.5
                     # Get color based on class ID
                     color = get_class_color(class_id)
 
@@ -58,10 +68,14 @@ def annotate_video_with_model(input_video_path, model):
                     # Put the label text on the frame
                     cv2.putText(frame, label_text, (int(x_min), int(y_min) - 10), 
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.9, color, 2)
-                    print(label)
+                    # print(label)
 
         # Display the annotated frame
         cv2.imshow('Annotated Video', frame)
+
+        # Write the frame to the output video
+        out.write(frame)
+        
 
         # Wait for 'q' key to stop
         if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -69,6 +83,8 @@ def annotate_video_with_model(input_video_path, model):
     
     # Release video resources and close window
     cap.release()
+    print(frame_height, frame_width, fps)
+    out.release()
     cv2.destroyAllWindows()
 
 # Example usage with your custom model
