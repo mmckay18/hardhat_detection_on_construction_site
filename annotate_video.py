@@ -4,14 +4,14 @@ from ultralytics import YOLO
 
 # Define a function to assign a color to each class
 def get_class_color(class_id):
-    # Define a list of colors (RGB tuples)
+    # Define a list of colors (BGR tuples) # OpenCV uses BGR format
     colors = [
-        (0, 255, 0),  # Class 0: Green
-        (255, 0, 0),  # Class 1: Blue
-        (0, 0, 255),  # Class 2: Red
-        (0, 255, 255),  # Class 3: Yellow
-        (255, 255, 0),  # Class 4: Cyan
-        (255, 0, 255)   # Class 5: Magenta
+        (0, 255, 0),    # Class 0: Green : Person
+        (0, 165, 255),  # Class 1: Orange : Vest
+        (255, 0, 0),    # Class 2: Blue : Blue hardhat
+        (0, 0, 255),    # Class 3: Red : Red hardhat
+        (255, 255, 255),# Class 4: White : White hardhat 
+        (0, 255, 255)   # Class 5: Yellow : Yellow hardhat 
     ]
     return colors[class_id % len(colors)]  # Assign color based on class_id, cycle if more than 6 classes
 
@@ -26,7 +26,7 @@ def annotate_video_with_model(input_video_path, model):
     if fps <= 0:
         fps = 30
     
-    out = cv2.VideoWriter(f'F:/coding_projects/hardhat_detection_on_construction_site/annotated_videos_results/annotated_{input_video_path.split("/")[-1].replace('mp4', 'avi')}', cv2.VideoWriter_fourcc(*'XVID'), fps, (frame_width, frame_height))
+    out = cv2.VideoWriter(f'F:/coding_projects/hardhat_detection_on_construction_site/annotated_videos_results/annotated_{input_video_path.split("/")[-1].replace("mp4", "avi")}', cv2.VideoWriter_fourcc(*'XVID'), fps, (frame_width, frame_height))
 
     while cap.isOpened():
         ret, frame = cap.read()
@@ -89,5 +89,5 @@ def annotate_video_with_model(input_video_path, model):
 
 # Example usage with your custom model
 model = YOLO('F:/coding_projects/hardhat_detection_on_construction_site/runs/detect/train35/weights/best.pt').to('cuda')
-input_video = 'F:/coding_projects/hardhat_detection_on_construction_site/hardhat_videos/Construction_vid_4.mp4'
+input_video = 'F:/coding_projects/hardhat_detection_on_construction_site/hardhat_videos/Construction_vid_0.mp4'
 annotate_video_with_model(input_video, model)
